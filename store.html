@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zain Karyana Store | Hassan Abdal</title>
+<style>
+:root{--green:#176b45;--dark:#10452f;--light:#eff8f1;--gold:#f4b942}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f7f9f7;color:#24352b}
+header{background:var(--green);color:white;padding:18px 5%;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{font-size:23px;font-weight:800}
+.logo span{color:#ffdb7b}
+header small{display:block;font-size:12px;font-weight:normal;margin-top:5px}
+.cart-btn,.primary,.secondary{border:0;border-radius:9px;padding:12px 17px;font-weight:bold;cursor:pointer}
+.cart-btn{background:var(--gold);color:#26351e}
+.hero{padding:45px 6%;background:linear-gradient(120deg,#e4f3e7,#f8f5df);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.hero h1{font-size:clamp(30px,5vw,48px);margin:0 0 12px;color:var(--dark)}
+.hero p{line-height:1.6;max-width:520px}
+.primary{background:var(--green);color:white}
+.secondary{background:#e5f2e8;color:var(--dark)}
+main{max-width:1200px;margin:auto;padding:28px 4%}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d5dfd7;border-radius:8px;font:inherit;background:white}
+.search{max-width:400px}
+.categories{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}
+.categories button{border:1px solid #cbdccf;background:white;padding:9px 14px;border-radius:20px;cursor:pointer}
+.categories button.active{background:var(--green);color:white}
+.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:15px}
+.product{background:white;border:1px solid #e5ebe6;border-radius:13px;padding:15px;box-shadow:0 3px 12px #153d1710;display:flex;flex-direction:column}
+.product .emoji{font-size:40px;background:var(--light);border-radius:10px;text-align:center;padding:14px}
+.product h3{font-size:16px;margin:12px 0 5px}
+.product p{color:#68776d;font-size:13px;margin:0 0 12px}
+.price{font-size:18px;font-weight:bold;color:var(--green);margin-top:auto;margin-bottom:12px}
+.product button{width:100%}
+.notice{background:#fff8e7;border:1px solid #f1dfaa;border-radius:10px;padding:13px;margin:22px 0;font-size:14px}
+footer{background:#123f2c;color:white;padding:30px 6%;line-height:1.8}
+footer a{color:#ffdf8c}
+.modal{display:none;position:fixed;inset:0;background:#0009;z-index:10;align-items:center;justify-content:center;padding:12px}
+.modal.show{display:flex}
+.panel{background:white;border-radius:15px;padding:22px;width:min(520px,100%);max-height:90vh;overflow:auto}
+.panel h2{margin-top:0}
+.cart-line{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #eee;padding:12px 0}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{border:0;background:#e5f2e8;border-radius:6px;padding:6px 10px;cursor:pointer}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{margin:12px 0}
+.field label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px}
+.invoice{border:1px solid #ddd;padding:20px;background:white;color:#222}
+.invoice table{width:100%;border-collapse:collapse;margin:15px 0}
+.invoice th,.invoice td{padding:9px;border-bottom:1px solid #ddd;text-align:left}
+.invoice .total{text-align:right;font-weight:bold;font-size:19px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+@media(max-width:600px){header{padding:15px}.hero{padding:30px 5%}.products{grid-template-columns:repeat(2,minmax(0,1fr))}.product{padding:10px}.product .emoji{font-size:32px}.form-grid{grid-template-columns:1fr}.section-title{align-items:stretch}.search{max-width:none}}
+@media print{body *{visibility:hidden}.invoice,.invoice *{visibility:visible}.invoice{position:absolute;left:0;top:0;width:100%;border:0}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🛒 Zain <span>Karyana Store</span>
+    <small>Railway Line Road, Hassan Abdal</small>
+  </div>
+  <button class="cart-btn" onclick="openCart()">🛍️ Cart (<span id="cartCount">0</span>)</button>
+</header>
+
+<section class="hero">
+  <div>
+    <h1>Ghar ki har zaroorat,<br>ek hi jagah!</h1>
+    <p>Quality grocery, daily essentials aur munasib prices. Zain Karyana Store par aapka khush aamdeed!</p>
+    <button class="primary" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+  </div>
+  <div style="font-size:90px">🥫 🛒 🥬</div>
+</section>
+
+<main id="shop">
+  <div class="section-title">
+    <h2>Hamare Products</h2>
+    <input class="search" id="search" placeholder="Product search karein..." oninput="renderProducts()">
+  </div>
+  <div class="categories" id="categories"></div>
+  <div class="products" id="products"></div>
+  <div class="notice">ℹ️ Tamam prices demo hain. Online publish karne se pehle apni shop ke actual rates update kar dein.</div>
+</main>
+
+<footer>
+  <h2>📍 Zain Karyana Store</h2>
+  <p>Railway Line Road, Hassan Abdal, Attock District, Punjab, Pakistan</p>
+  <p>WhatsApp: <span id="footerPhone">03139006914</span></p>
+  <p>Email: abcd@gmail.com</p>
+  <a target="_blank" href="https://www.google.com/maps/search/?api=1&query=Zain+Karyana+Store+Railway+Line+Road+Hassan+Abdal+Pakistan">Google Maps par location dekhein</a>
+  <p>© 2026 Zain Karyana Store. All rights reserved.</p>
+</footer>
+
+<div class="modal" id="cartModal">
+ <div class="panel">
+  <div class="section-title"><h2>🛒 Your Cart</h2><button class="secondary" onclick="closeCart()">Close ✕</button></div>
+  <div id="cartItems"></div>
+  <h3 id="cartTotal">Total: Rs. 0</h3>
+  <button class="primary" style="width:100%" onclick="checkout()">Proceed to Checkout</button>
+ </div>
+</div>
+
+<script>
+const OWNER_PHONE = "923000000000"; // Apna WhatsApp number international format mein likhein
+const OWNER_EMAIL = "abcd@gmail.com"; // Apna email yahan update karein
+
+const products = [
+["Basmati Rice","Grocery","🍚",320],["Sela Rice","Grocery","🍚",290],
+["Sugar 1kg","Grocery","🧂",170],["Wheat Flour 1kg","Grocery","🌾",150],
+["Cooking Oil 1L","Grocery","🫗",550],["Ghee 1kg","Grocery","🧈",590],
+["Daal Chana 1kg","Grocery","🫘",280],["Daal Masoor 1kg","Grocery","🫘",300],
+["Daal Moong 1kg","Grocery","🫘",340],["Daal Mash 1kg","Grocery","🫘",420],
+["White Chana 1kg","Grocery","🫘",310],["Black Chana 1kg","Grocery","🫘",290],
+["Salt 800g","Grocery","🧂",60],["Tea Pack","Grocery","🍵",450],
+["Milk 1L","Dairy","🥛",250],["Yogurt 1kg","Dairy","🥣",220],
+["Butter","Dairy","🧈",280],["Bread","Bakery","🍞",120],
+["Rusk Pack","Bakery","🥨",180],["Biscuits","Snacks","🍪",50],
+["Chips","Snacks","🍟",60],["Noodles","Snacks","🍜",80],
+["Jam","Snacks","🍓",220],["Honey","Snacks","🍯",450],
+["Ketchup","Grocery","🍅",180],["Mayonnaise","Grocery","🥫",250],
+["Red Chilli Powder","Spices","🌶️",100],["Turmeric Powder","Spices","🟡",90],
+["Coriander Powder","Spices","🌿",100],["Black Pepper","Spices","⚫",160],
+["Dish Wash","Household","🧽",180],["Washing Powder","Household","🫧",250],
+["Bath Soap","Household","🧼",100],["Shampoo","Household","🧴",220],
+["Toothpaste","Household","🪥",180],["Tissue Box","Household","🧻",130],
+["Mineral Water","Drinks","💧",100],["Juice Pack","Drinks","🧃",120],
+["Cold Drink","Drinks","🥤",120],["Eggs Dozen","Dairy","🥚",360],
+["Potatoes 1kg","Fresh","🥔",100],["Onions 1kg","Fresh","🧅",120],
+["Tomatoes 1kg","Fresh","🍅",150],["Bananas Dozen","Fresh","🍌",180],
+["Apples 1kg","Fresh","🍎",300],["Garlic 250g","Fresh","🧄",140],
+["Lentil Mix","Grocery","🥘",260],["Corn Flour","Grocery","🌽",140]
+].map((p,i)=>({id:i,name:p[0],cat:p[1],emoji:p[2],price:p[3]}));
+
+let cart = {};
+let activeCategory = "All";
+const money = n => "Rs. " + Number(n).toLocaleString("en-PK");
+
+function renderCategories(){
+ const cats=["All",...new Set(products.map(p=>p.cat))];
+ document.getElementById("categories").innerHTML=cats.map(c=>
+ `<button class="${activeCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</button>`
+ ).join("");
+}
+function setCategory(c){activeCategory=c;renderCategories();renderProducts()}
+function renderProducts(){
+ const q=document.getElementById("search").value.toLowerCase();
+ const list=products.filter(p=>(activeCategory==="All"||p.cat===activeCategory)&&p.name.toLowerCase().includes(q));
+ document.getElementById("products").innerHTML=list.map(p=>`
+ <div class="product">
+  <div class="emoji">${p.emoji}</div>
+  <h3>${p.name}</h3><p>${p.cat}</p>
+  <div class="price">${money(p.price)}</div>
+  <button class="primary" onclick="addToCart(${p.id})">+ Add to Cart</button>
+ </div>`).join("")||"<p>No products found.</p>";
+}
+function addToCart(id){cart[id]=(cart[id]||0)+1;updateCart()}
+function changeQty(id,n){cart[id]=(cart[id]||0)+n;if(cart[id]<=0)delete cart[id];updateCart()}
+function getItems(){return Object.entries(cart).map(([id,qty])=>({...products[Number(id)],qty}))}
+function total(){return getItems().reduce((s,p)=>s+p.price*p.qty,0)}
+function updateCart(){
+ document.getElementById("cartCount").textContent=getItems().reduce((s,p)=>s+p.qty,0);
+ document.getElementById("cartItems").innerHTML=getItems().map(p=>`
+ <div class="cart-line"><div><b>${p.name}</b><br><small>${money(p.price)} each</small></div>
+ <div class="qty"><button onclick="changeQty(${p.id},-1)">−</button>${p.qty}<button onclick="changeQty(${p.id},1)">+</button></div>
+ <b>${money(p.price*p.qty)}</b></div>`).join("")||"<p>Your cart is empty.</p>";
+ document.getElementById("cartTotal").textContent="Total: "+money(total());
+}
+function openCart(){updateCart();document.getElementById("cartModal").classList.add("show")}
+function closeCart(){document.getElementById("cartModal").classList.remove("show")}
+
+function checkout(){
+ if(!getItems().length){alert("Please add products to your cart first.");return}
+ const order={items:getItems(),total:total(),created:Date.now()};
+ localStorage.setItem("zainStorePendingOrder",JSON.stringify(order));
+ const w=window.open("","_blank");
+ if(!w){alert("Please allow pop-ups for checkout.");return}
+ w.document.open();
+ w.document.write(checkoutPage());
+ w.document.close();
+ closeCart();
+}
+function checkoutPage(){
+ return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <title>Checkout - Zain Karyana Store</title><style>
+ body{font-family:Arial;background:#f2f7f3;margin:0;padding:18px;color:#24352b}
+ .box{max-width:650px;margin:20px auto;background:white;padding:22px;border-radius:14px}
+ input,textarea,select{width:100%;padding:12px;margin:6px 0 14px;border:1px solid #ccd9ce;border-radius:8px;box-sizing:border-box;font:inherit}
+ button{padding:12px 16px;border:0;border-radius:8px;background:#176b45;color:white;font-weight:bold;cursor:pointer;margin:5px 4px 5px 0}
+ .line{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:10px 0}
+ .muted{color:#66756b;font-size:13px}
+ .invoice{border:1px solid #ddd;padding:16px;margin-top:18px}
+ .invoice table{width:100%;border-collapse:collapse}.invoice td,.invoice th{padding:8px;border-bottom:1px solid #ddd;text-align:left}
+ @media print{body *{visibility:hidden}.invoice,.invoice *{visibility:visible}.invoice{position:absolute;top:0;left:0;width:95%;border:0}}
+ </style></head><body><div class="box">
+ <h1>🛒 Zain Karyana Store</h1><p class="muted">Customer Checkout & Invoice</p>
+ <h2>Your Order</h2><div id="summary"></div><h3 id="grand"></h3>
+ <h2>Customer Details</h2>
+ <label>Customer Name</label><input id="name" placeholder="Your full name">
+ <label>Phone Number</label><input id="phone" placeholder="03XXXXXXXXX" type="tel">
+ <label>Delivery Address</label><textarea id="address" placeholder="House number, street, area"></textarea>
+ <label>Order Type</label><select id="type"><option>Home Delivery</option><option>Store Pickup</option></select>
+ <button onclick="makeInvoice()">Confirm Order & Generate Invoice</button>
+ <div id="result"></div>
+ </div>
+ <script>
+ const order=JSON.parse(localStorage.getItem("zainStorePendingOrder")||"null");
+ const OWNER_PHONE=${JSON.stringify("923000000000")};
+ const OWNER_EMAIL=${JSON.stringify("abcd@gmail.com")};
+ const fmt=n=>"Rs. "+Number(n).toLocaleString("en-PK");
+ if(!order){document.getElementById("summary").textContent="No order found. Please return to the store."}
+ else{
+ document.getElementById("summary").innerHTML=order.items.map(p=>'<div class="line"><span>'+p.name+' × '+p.qty+'</span><b>'+fmt(p.price*p.qty)+'</b></div>').join("");
+ document.getElementById("grand").textContent="Total: "+fmt(order.total);
+ }
+ function makeInvoice(){
+ if(!order)return;
+ const name=document.getElementById("name").value.trim();
+ const phone=document.getElementById("phone").value.trim();
+ const address=document.getElementById("address").value.trim();
+ const type=document.getElementById("type").value;
+ if(!name||!phone||!address){alert("Please enter name, phone and address.");return}
+ const invoiceNo="ZKS-"+Date.now().toString().slice(-8);
+ const date=new Date().toLocaleString();
+ const invoice=document.createElement("div");
+ invoice.className="invoice";
+ invoice.innerHTML='<h2>Zain Karyana Store</h2><p>Railway Line Road, Hassan Abdal, Attock, Punjab</p><hr><h3>INVOICE</h3><p>Invoice: '+invoiceNo+'<br>Date: '+date+'</p><p><b>Customer:</b> '+safe(name)+'<br><b>Phone:</b> '+safe(phone)+'<br><b>Address:</b> '+safe(address)+'<br><b>Order:</b> '+safe(type)+'</p><table><tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr>'+order.items.map(p=>'<tr><td>'+safe(p.name)+'</td><td>'+p.qty+'</td><td>'+fmt(p.price)+'</td><td>'+fmt(p.price*p.qty)+'</td></tr>').join("")+'</table><h3 style="text-align:right">Grand Total: '+fmt(order.total)+'</h3><p>Thank you for shopping with us!</p>';
+ const result=document.getElementById("result");
+ result.innerHTML="";
+ result.appendChild(invoice);
+ const actions=document.createElement("div");
+ actions.innerHTML='<button onclick="window.print()">Print / Save PDF</button><button id="download">Download Invoice</button><button id="wa">Send Order on WhatsApp</button><button id="email">Send Order by Email</button>';
+ result.appendChild(actions);
+ const orderText="ZAIN KARYANA STORE - NEW ORDER\\nInvoice: "+invoiceNo+"\\nCustomer: "+name+"\\nPhone: "+phone+"\\nAddress: "+address+"\\nOrder: "+type+"\\n\\n"+order.items.map(p=>p.name+" x "+p.qty+" = "+fmt(p.price*p.qty)).join("\\n")+"\\n\\nTOTAL: "+fmt(order.total);
+ document.getElementById("wa").onclick=()=>window.open("https://wa.me/"+OWNER_PHONE+"?text="+encodeURIComponent(orderText),"_blank");
+ document.getElementById("email").onclick=()=>location.href="mailto:"+OWNER_EMAIL+"?subject="+encodeURIComponent("New Store Order "+invoiceNo)+"&body="+encodeURIComponent(orderText);
+ document.getElementById("download").onclick=()=>{
+ const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Invoice '+invoiceNo+'</title></head><body>'+invoice.outerHTML+'</body></html>';
+ const blob=new Blob([html],{type:"text/html"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=invoiceNo+".html";a.click();URL.revokeObjectURL(a.href);
+ };
+ localStorage.setItem("zainStoreLastOrder",JSON.stringify({invoiceNo,name,phone,address,type,orderText,date}));
+ }
+ function safe(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+ <\/script></body></html>`;
+}
+renderCategories();renderProducts();updateCart();
+</script>
+</body>
+</html>
